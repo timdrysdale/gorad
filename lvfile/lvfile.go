@@ -3,6 +3,7 @@ package lvfile
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -41,6 +42,36 @@ func GetFileList(dir string) ([]string, error) {
 func IsDAT(path string) bool {
 	suffix := strings.ToLower(filepath.Ext(path))
 	return strings.Compare(suffix, ".dat") == 0
+}
+
+func ParseDATDir(inputDir string) ([]Sample, error) {
+
+	samples := []Sample{}
+
+	files, err := GetFileList(inputDir)
+
+	if err != nil {
+		return samples, err
+	}
+
+	for _, file := range files {
+
+		if IsDAT(file) {
+			newSamples, err := ParseDATFile(file)
+
+			if err != nil {
+				return samples, fmt.Errorf("Error parsing %s", file)
+			}
+
+			for _, newSample := range newSamples {
+				samples = append(samples, newSample)
+			}
+		}
+
+	}
+
+	return samples, nil
+
 }
 
 func ParseDATFile(inputPath string) ([]Sample, error) {

@@ -23,3 +23,13 @@ func TestParseDATFile(t *testing.T) {
 	assert.Equal(t, complex(1.414394E-2, 1.187611E-2), samples[3].Val)
 
 }
+
+func TestParseDATFilesInDir(t *testing.T) {
+
+	samples, err := ParseDATDir("test")
+
+	assert.NoError(t, err)
+
+	assert.Equal(t, 11, len(samples))
+
+}
