@@ -11,13 +11,8 @@ import (
 	"strings"
 
 	mgl "github.com/go-gl/mathgl/mgl64"
+	"github.com/timdrysdale/gorad/core"
 )
-
-type Sample struct {
-	Pos  mgl.Vec3
-	Freq float64
-	Val  complex128
-}
 
 func GetFileList(dir string) ([]string, error) {
 
@@ -44,9 +39,9 @@ func IsDAT(path string) bool {
 	return strings.Compare(suffix, ".dat") == 0
 }
 
-func ParseDATDir(inputDir string) ([]Sample, error) {
+func ParseDATDir(inputDir string) ([]core.Sample, error) {
 
-	samples := []Sample{}
+	samples := []core.Sample{}
 
 	files, err := GetFileList(inputDir)
 
@@ -74,11 +69,11 @@ func ParseDATDir(inputDir string) ([]Sample, error) {
 
 }
 
-func ParseDATFile(inputPath string) ([]Sample, error) {
+func ParseDATFile(inputPath string) ([]core.Sample, error) {
 
 	pos := mgl.Vec3{}
 
-	samples := []Sample{}
+	samples := []core.Sample{}
 
 	file, err := os.Open(inputPath)
 
@@ -138,9 +133,9 @@ SCAN:
 				continue
 			}
 
-			samples = append(samples, Sample{
+			samples = append(samples, core.Sample{
 				Pos:  pos,
-				Freq: freq,
+				Freq: int(freq),
 				Val:  complex(real, imag),
 			})
 
