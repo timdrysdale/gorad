@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gocarina/gocsv"
 	"github.com/timdrysdale/gorad/core"
@@ -71,4 +72,26 @@ func ConvertSamplesToFileSamples(samples []core.Sample) []core.FileSample {
 
 	return fileSamples
 
+}
+
+func ReadFarfields(path string) ([]*core.Farfield, error) {
+
+	farfields := []*core.Farfield{}
+
+	file, err := os.Open(path)
+	if err != nil {
+		return farfields, err
+	}
+
+	defer file.Close()
+
+	if err := gocsv.UnmarshalFile(file, &farfields); err != nil {
+		panic(err)
+	}
+
+	for idx, farfield := range farfields {
+		farfields[idx].Plane = strings.TrimSpace(farfield.Plane)
+	}
+
+	return farfields, nil
 }

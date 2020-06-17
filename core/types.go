@@ -15,3 +15,17 @@ type FileSample struct {
 	X, Y, Z    float64
 	Real, Imag float64
 }
+
+type Farfield struct {
+	Freq      int
+	Plane     string
+	Intersect float64
+	Width     float64
+	Points    int
+}
+
+type Calc struct {
+	Sources   *[]Sample
+	Farfields *[]Sample
+	Setup     Farfield
+}

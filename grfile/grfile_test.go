@@ -36,3 +36,21 @@ func TestConvertSamplesToFileSamples(t *testing.T) {
 	assert.Equal(t, 40., fileSamples[1].Imag)
 
 }
+
+//Freq, Plane, Intersect, Width, Points
+//9000000000, XY, 5000, 10000, 56
+//9100000000, XY, 6000, 12000, 56
+func TestReadFarfields(t *testing.T) {
+
+	farfields, err := ReadFarfields("test/test-farfield.csv")
+
+	assert.NoError(t, err)
+
+	assert.Equal(t, 2, len(farfields))
+
+	assert.Equal(t, "XY", farfields[0].Plane)
+	assert.Equal(t, 5000., farfields[0].Intersect)
+	assert.Equal(t, 10000., farfields[0].Width)
+	assert.Equal(t, 56, farfields[0].Points)
+
+}
