@@ -1,11 +1,13 @@
 package grfile
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	mgl "github.com/go-gl/mathgl/mgl64"
 	"github.com/gocarina/gocsv"
 	"github.com/timdrysdale/gorad/core"
 )
@@ -53,6 +55,57 @@ func WriteByFreq(samples []core.Sample, outputDir string) error {
 
 }
 
+func SaveResults(result *core.Calc, dir string) error {
+
+	rf := result.Setup
+
+	filename := fmt.Sprintf("%s-%d-%g-%g-%d-results.csv", rf.Plane, rf.Freq, rf.Intersect, rf.Width, rf.Points)
+	fullPath := filepath.Join(dir, filename)
+	if result.Farfields == nil {
+		return errors.New("nil pointer to results")
+	}
+	fileSamples := ConvertSamplesToFileSamples(*result.Farfields)
+	file, err := os.OpenFile(fullPath, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+	err = gocsv.MarshalFile(&fileSamples, file)
+
+	file.Close()
+
+	if err == nil {
+		fmt.Println(fullPath)
+	}
+
+	return err
+
+}
+
+func ReadFreq(path string) ([]core.Sample, error) {
+
+	samples := []core.Sample{}
+
+	file, err := os.Open(path)
+	if err != nil {
+		return samples, err
+	}
+
+	defer file.Close()
+
+	fileSamples := []core.FileSample{}
+
+	err = gocsv.UnmarshalFile(file, &fileSamples)
+
+	if err != nil {
+		return samples, err
+	}
+
+	samples = ConvertFileSamplesToSamples(fileSamples)
+
+	return samples, nil
+
+}
+
 func ConvertSamplesToFileSamples(samples []core.Sample) []core.FileSample {
 
 	fileSamples := []core.FileSample{}
@@ -71,6 +124,24 @@ func ConvertSamplesToFileSamples(samples []core.Sample) []core.FileSample {
 	}
 
 	return fileSamples
+
+}
+
+func ConvertFileSamplesToSamples(filesamples []core.FileSample) []core.Sample {
+
+	samples := []core.Sample{}
+
+	for _, fs := range filesamples {
+
+		samples = append(samples, core.Sample{
+			Freq: fs.Freq,
+			Pos:  mgl.Vec3{fs.X, fs.Y, fs.Z},
+			Val:  complex(fs.Real, fs.Imag),
+		})
+
+	}
+
+	return samples
 
 }
 

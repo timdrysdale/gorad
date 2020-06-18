@@ -35,6 +35,10 @@ func TestConvertSamplesToFileSamples(t *testing.T) {
 	assert.Equal(t, 30., fileSamples[1].Real)
 	assert.Equal(t, 40., fileSamples[1].Imag)
 
+	samples := ConvertFileSamplesToSamples(fileSamples)
+
+	assert.Equal(t, input, samples)
+
 }
 
 //Freq, Plane, Intersect, Width, Points
