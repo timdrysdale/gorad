@@ -9,16 +9,7 @@ Created on Thu Jun 18 01:11:37 2020
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-
-#data/out/XY-10001250000-5000-10000-200-results.csv
-#data/out/XY-11002500000-5000-10000-200-results.csv
-#data/out/XY-12000000000-5000-10000-200-results.csv
-#data/out/XY-13001250000-5000-10000-200-results.csv
-#data/out/XY-14002500000-5000-10000-200-results.csv
-
-
-freqs = [9000000000,10001250000,11002500000,12000000000,13001250000,14002500000]
+freqs = [9000000000,10001250000,11002500000,12000000000,13001250000,14002500000,15000000000]
 
 for freq in freqs:
 
@@ -48,11 +39,16 @@ for freq in freqs:
     plt.ylabel("Y (mm)")
     cbar.ax.get_yaxis().labelpad = 15
     cbar.ax.set_ylabel('normalised intensity (dB)', rotation=270)
+    plt.title("%0.2g GHz"%(freq/1e9))
     plt.savefig(basename + "near-intensity.jpg",dpi=300)
     plt.show()
     
     plt.contourf(X_n,Y_n,np.angle(Z_n))
-    plt.colorbar()
+    cbar = plt.colorbar()  
+    cbar.ax.get_yaxis().labelpad = 15
+    cbar.ax.set_ylabel('phase (rad)', rotation=270)
+
+    plt.title("%0.2g GHz"%(freq/1e9))
     plt.savefig(basename + "near-phase.jpg",dpi=300)
     plt.show()
     
@@ -82,10 +78,14 @@ for freq in freqs:
     plt.ylabel("Y (mm)")
     cbar.ax.get_yaxis().labelpad = 15
     cbar.ax.set_ylabel('normalised intensity (dB)', rotation=270)
+    plt.title("%0.2g GHz"%(freq/1e9))
     plt.savefig(basename + "-intensity.jpg",dpi=300)
     plt.show()
     
     plt.contourf(X_n,Y_n,np.angle(Z_n))
-    plt.colorbar()
-    plt.savefig(basename + "-phase.jpg",dpi=300)
+    cbar = plt.colorbar() 
+    cbar.ax.get_yaxis().labelpad = 15
+    cbar.ax.set_ylabel('phase (rad)', rotation=270)
+    plt.title("%0.2g GHz"%(freq/1e9))
+    plt.savefig(basename + "-phase.jpg",dpi=300) 
     plt.show()
