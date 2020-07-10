@@ -10,8 +10,8 @@ import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt 
 
-if __name__ == "__main__":
-    
+
+def get_ideal():
     N = 360
     
     twopi = 2*np.pi
@@ -26,8 +26,11 @@ if __name__ == "__main__":
         
     modes = [mm2,mm1,m0,mp1,mp2]
     names = ["-2","-1","0","1","2"]
+    return modes, names    
 
-    
+
+def show_modes():
+    modes, names = get_ideal()
     plt.figure()
     for m,n in zip(modes,names):
         plt.plot(theta, m, label = "mode = " + n)  
@@ -37,6 +40,9 @@ if __name__ == "__main__":
     plt.title("Ideal modes")
     plt.savefig("mode-phase-ideal.png",dpi=300)
     
+    
+def show_fft():
+    modes, names = get_ideal()
     plt.figure()
     for m,n in zip(modes,names):
 
@@ -75,6 +81,20 @@ if __name__ == "__main__":
     plt.ylabel("Angle (rad)")
     plt.title("Ideal modes - FFT (angle)")
     plt.savefig("mode-spectra-fft-ideal-phase.png",dpi=300)
+      
+    
+if __name__ == "__main__":
+
+    show_modes()
+    show_fft()    
+
+    
+
+    
+
+    
+    
+    
     
     
     
