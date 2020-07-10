@@ -11,11 +11,11 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 from scipy.interpolate import RegularGridInterpolator
   
-freqs = [9000000000,9600000000,9603750000,9607500000,9611250000,10001250000,11002500000,12000000000,13001250000,14002500000,15000000000]
-sizes = [5000,2500,2500,2500,2500,5000,5000,5000,5000,5000,5000]
+#freqs = [9000000000,9600000000,9603750000,9607500000,9611250000,10001250000,11002500000,12000000000,13001250000,14002500000,15000000000]
+#sizes = [5000,2500,2500,2500,2500,5000,5000,5000,5000,5000,5000]
 
-#freqs = [9600000000]
-#sizes = [2500]
+freqs = [9600000000]
+sizes = [2500]
 
 for freq, size in zip(freqs,sizes):
 
@@ -101,7 +101,8 @@ for freq, size in zip(freqs,sizes):
     cbar.ax.set_ylabel('phase (rad)', rotation=270)
     plt.gcf().gca().set_aspect('equal')
     plt.title("%0.2g GHz"%(freq/1e9))
-    
+    plt.gcf().gca().set_aspect('equal')
+    plt.savefig(basename + "-phase.jpg",dpi=300)  
     r1 = 500
     r2 = 750
     r3 = 1000
@@ -113,10 +114,10 @@ for freq, size in zip(freqs,sizes):
     draw_circle3 = plt.Circle((0,0), r3,fill=False,ls="-.",color="red",lw=2)
     plt.gcf().gca().add_artist(draw_circle3)   
     
-    plt.gcf().gca().set_aspect('equal')
+
     
     
-    plt.savefig(basename + "-phase.jpg",dpi=300) 
+    plt.savefig(basename + "-phase-rings.jpg",dpi=300) 
     plt.show()
     
     
@@ -168,7 +169,7 @@ for freq, size in zip(freqs,sizes):
     plt.legend()
     plt.xlabel("Azimuthal position (rad)")
     plt.ylabel("Phase difference (rad)")
-    plt.savefig(basename + "-phase-purity-rings.jpg",dpi=300) 
+    plt.savefig(basename + "-phase-linear.jpg",dpi=300) 
     plt.show()
     
     mode1 = ph1_tidy / Theta
