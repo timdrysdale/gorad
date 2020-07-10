@@ -81,12 +81,67 @@ def show_fft():
     plt.ylabel("Angle (rad)")
     plt.title("Ideal modes - FFT (angle)")
     plt.savefig("mode-spectra-fft-ideal-phase.png",dpi=300)
-      
+
+
+def get_basis(biggest_mode, mode_steps, theta_steps):
+    modes = []
+   
+    theta = np.linspace(0,2*np.pi,num=theta_steps)
     
+    number = np.linspace(-biggest_mode,biggest_mode,num=mode_steps)
+   
+    for n in number:
+        
+        if n == 0:
+            m = theta * 0 + 1e-999  #avoid divide by zero
+        else:
+            m = theta * n
+            
+        m = np.mod(m, 2 * np.pi)
+        
+        modes.append(m)
+        
+    return theta, modes, number     
+    
+def demo_basis():
+
+    th, bm, bn = get_basis(2,50,360)
+
+    for m,n in zip(bm,bn):
+        plt.plot(th, m, label = 'mode = %g'%n)
+    
+    plt.title("Basis functions example")
+    plt.xlabel("Azimuthal angle (rad)")    
+    plt.ylabel("Phase (rad)")
+    plt.savefig("basis-functions-example.png", dpi = 300)
+def try_basis():
+    modes, names = get_ideal()
+
+    th, bm, bn = get_basis(2,50,360)
+    
+    
+    coeffs = []
+    plt.figure()
+    for m in modes:
+        mc = []
+        for b in bm:
+            mc.append(np.dot(m,b)/len(th))
+        plt.plot(bn,mc)
+        coeffs.append(mc)    
+
+    plt.savefig("fractional_basis.png",dpi=300)
+         
+        
 if __name__ == "__main__":
 
-    show_modes()
-    show_fft()    
+    #show_modes()
+    #show_fft()    
+    #demo_basis()
+    try_basis()
+    
+
+            
+            
 
     
 
