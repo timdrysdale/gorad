@@ -9,7 +9,7 @@ Created on Fri Jul 10 16:51:44 2020
 import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt 
-
+from scipy import stats
 
 def get_ideal():
     N = 360
@@ -44,12 +44,14 @@ def show_modes():
 def show_fft():
     modes, names = get_ideal()
     plt.figure()
+    
+    N = len(modes[0])
     for m,n in zip(modes,names):
 
         Y = np.fft.fftshift(np.fft.fft(np.exp(1j * m)))
         YdB = np.log10(Y**2/np.max(Y**2))
         freq = np.fft.fftshift(np.fft.fftfreq(m.shape[-1])) * N
-        plt.plot(freq,YdB, label = "mode = " + n)    
+        plt.plot(freq,YdB, ':o',label = "mode = " + n)    
 
         window = 10
         lower = int(N/2) - int(window/2)
@@ -114,6 +116,7 @@ def demo_basis():
     plt.xlabel("Azimuthal angle (rad)")    
     plt.ylabel("Phase (rad)")
     plt.savefig("basis-functions-example.png", dpi = 300)
+    
 def try_basis():
     modes, names = get_ideal()
 
@@ -137,11 +140,134 @@ if __name__ == "__main__":
     #show_modes()
     #show_fft()    
     #demo_basis()
-    try_basis()
+    #try_basis()
+    #modes, names = get_ideal()
     
+    #    modes = [ph1_tidy, ph2_tidy, ph3_tidy]
+    #    names = ["500","750","1000"]
+    #    
+    #    dms = []
+    #    
+    #    
+    #    mode_factor = len(modes[0]) / (2 * np.pi )
+    #    
+    #    hbins = np.linspace(-10,10,num=100)
+    #    
+    #    plt.figure(figsize=(6, 4))
+    #        
+    #    for m,n  in zip(modes, names):
+    #        print(n)
+    #        dm = np.diff(m) * mode_factor
+    #        dms.append(dm)  
+    #        #plt.hist(dm,bins=bins,density=True)
+    #        #plt.show()
+    #        #https://scipy-lectures.org/intro/scipy/auto_examples/plot_normal_distribution.html
+    #        histogram, bins = np.histogram(dm, bins=hbins, density=True) 
+    #        bin_centers = 0.5*(bins[1:] + bins[:-1])
+    #
+    # 
+    #        plt.plot(bin_centers, histogram, label="mode =" + n)
+    #        plt.legend()
+    #    
+    #    plt.show()
 
-            
-            
+    def make_data(N, f=0.3, rseed=1):
+        rand = np.random.RandomState(rseed)
+        x = rand.randn(N)
+        x[int(f * N):] += 5
+        return x
+    
+    x = make_data(1000)
+
+    hbins = np.linspace(-10,10,num=1000)
+
+    from sklearn.neighbors import KernelDensity
+    x_d = np.linspace(-4, 8, 1000)
+    # instantiate and fit the KDE model
+    kde = KernelDensity(bandwidth=1.0, kernel='gaussian')
+    kde.fit(x[:, None])
+    
+    # score_samples returns the log of the probability density
+    logprob = kde.score_samples(x_d[:, None])
+    
+    plt.fill_between(x_d, np.exp(logprob), alpha=0.5)
+    plt.plot(x, np.full_like(x, -0.01), '|k', markeredgewidth=1)
+    plt.ylim(-0.02, 0.22)
+    
+    plt.figure()
+    
+    x = ph1_tidy
+
+    x_d = hbins
+    # instantiate and fit the KDE model
+    kde = KernelDensity(bandwidth=0.5, kernel='gaussian')
+    kde.fit(x[:, None])
+    
+    # score_samples returns the log of the probability density
+    logprob = kde.score_samples(x_d[:, None])
+    
+    plt.fill_between(x_d, np.exp(logprob), alpha=0.5)
+    plt.plot(x, np.full_like(x, -0.01), '|k', markeredgewidth=1)
+    plt.ylim(-0.02, 0.22)
+ 
+    plt.figure()
+    
+    x = np.diff(modes[0])*mode_factor
+
+    x_d = hbins
+    # instantiate and fit the KDE model
+    kde = KernelDensity(bandwidth=0.01, kernel='gaussian')
+    kde.fit(x[:, None])
+    
+    # score_samples returns the log of the probability density
+    logprob = kde.score_samples(x_d[:, None])
+    
+    plt.fill_between(x_d, np.exp(logprob), alpha=0.5)
+    plt.plot(x, np.full_like(x, -0.01), '|k', markeredgewidth=1)
+    
+    x = np.diff(modes[1])*mode_factor
+
+    x_d = hbins
+    # instantiate and fit the KDE model
+    kde = KernelDensity(bandwidth=0.01, kernel='gaussian')
+    kde.fit(x[:, None])
+    
+    # score_samples returns the log of the probability density
+    logprob = kde.score_samples(x_d[:, None])
+    
+    plt.fill_between(x_d, np.exp(logprob), alpha=0.5)
+    plt.plot(x, np.full_like(x, -0.01), '|k', markeredgewidth=1)
+    
+    x = np.diff(modes[2])*mode_factor
+
+    x_d = hbins
+    # instantiate and fit the KDE model
+    kde = KernelDensity(bandwidth=0.01, kernel='gaussian')
+    kde.fit(x[:, None])
+    
+    # score_samples returns the log of the probability density
+    logprob = kde.score_samples(x_d[:, None])
+    
+    plt.fill_between(x_d, np.exp(logprob), alpha=0.5)
+    plt.plot(x, np.full_like(x, -0.01), '|k', markeredgewidth=1)
+    plt.xlim([-5,5])
+    
+    x = np.diff(mi[4])*len(mi[3])/2/(2*np.pi)
+
+    x_d = hbins
+    # instantiate and fit the KDE model
+    kde = KernelDensity(bandwidth=0.01, kernel='gaussian')
+    kde.fit(x[:, None])
+    
+    # score_samples returns the log of the probability density
+    logprob = kde.score_samples(x_d[:, None])
+    
+    plt.fill_between(x_d, np.exp(logprob), alpha=0.5)
+    plt.plot(x, np.full_like(x, -0.01), '|k', markeredgewidth=1)
+    plt.xlim([-5,5])   
+    
+    #plt.ylim(-0.02, 0.22)    
+    
 
     
 
